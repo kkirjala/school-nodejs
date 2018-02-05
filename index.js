@@ -53,6 +53,22 @@ app.get('/api/persons/:id', (req, res) => {
     
 })
 
+app.delete('/api/persons/:id', (req, res) => {
+
+    const lookupId = Number(req.params.id)
+    const lookupPerson = persons
+        .find(person => person.id === lookupId)
+
+    if (lookupPerson) {
+        persons = persons
+            .filter(person => person.id !== lookupPerson.id)
+        res.status(204).end()
+    } else {
+        res.status(404).end()
+    }
+    
+})
+
 
 
 const PORT = 3001
