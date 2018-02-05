@@ -1,9 +1,7 @@
-
-const isNumber = require('util')
 const express = require('express')
-const app = express()
 const bodyParser = require('body-parser')
 
+const app = express()
 app.use(bodyParser.json())
 
 
@@ -43,7 +41,7 @@ app.get('/api/persons', (req, res) => {
     res.json(persons)    
 })
 
-// find person either by id (primary) or by name
+// find person either by id (primary) or by name (case-insensitive)
 findPerson = (searchTerm) => {
 
     if (!isNaN(searchTerm)) {
@@ -51,7 +49,7 @@ findPerson = (searchTerm) => {
             .find(person => person.id === searchTerm)
     } else {
         return persons
-            .find(person => person.name === searchTerm)
+            .find(person => person.name.toLowerCase() === searchTerm.toLowerCase())
     }
 }
 
@@ -82,6 +80,32 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 
+app.post('/api/persons', (req, res) => {
+
+    const newPerson = req.body
+
+    if (!newPerson.name || !newPerson.phoneNumber) {
+        return res
+            .status(400)
+            .json({ error: 'content missing' })
+    } else if (findPerson(newPerson.name)) {
+        return res
+            .status(422)
+            .json({ error: 'name must be unique' })
+    }
+
+    const addPerson = {
+        name: newPerson.name,
+        phoneNumber: newPerson.phoneNumber,
+        id: Math.floor(Math.random() * 1000000)
+    }
+
+    persons = persons.concat(addPerson)
+
+    res.json(addPerson)
+    res.status(200);
+
+})
 
 const PORT = 3001
 app.listen(PORT, () => {
