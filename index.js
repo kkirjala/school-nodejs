@@ -1,3 +1,5 @@
+
+const isNumber = require('util')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -41,9 +43,21 @@ app.get('/api/persons', (req, res) => {
     res.json(persons)    
 })
 
+// find person either by id (primary) or by name
+findPerson = (searchTerm) => {
+
+    if (!isNaN(searchTerm)) {
+        return persons
+            .find(person => person.id === searchTerm)
+    } else {
+        return persons
+            .find(person => person.name === searchTerm)
+    }
+}
+
 app.get('/api/persons/:id', (req, res) => {
-    const lookupId = Number(req.params.id)
-    const person = persons.find(person => person.id === lookupId)
+
+    const person = findPerson(Number(req.params.id))
 
     if (person) {
         res.json(person)
@@ -55,9 +69,7 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res) => {
 
-    const lookupId = Number(req.params.id)
-    const lookupPerson = persons
-        .find(person => person.id === lookupId)
+    const lookupPerson = findPerson(Number(req.params.id))
 
     if (lookupPerson) {
         persons = persons
