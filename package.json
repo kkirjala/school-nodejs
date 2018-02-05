@@ -1,0 +1,26 @@
+{
+  "name": "phonebook-backend",
+  "version": "0.0.1",
+  "description": "REST backend for a phonebook React app",
+  "main": "index.js",
+  "scripts": {
+    "watch": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkirjala/school-nodejs.git"
+  },
+  "author": "Kalle Kirjalainen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kkirjala/school-nodejs/issues"
+  },
+  "homepage": "https://github.com/kkirjala/school-nodejs#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.12"
+  }
+}
