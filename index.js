@@ -111,6 +111,15 @@ app.post('/api/persons', (req, res) => {
 
 })
 
+
+
+const error = (req, res) => {
+    res.status(404).send({error: 'unknown endpoint'})
+  }
+  
+app.use(error)
+
+
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server started using TCP port ${PORT}`)
