@@ -124,7 +124,7 @@ const error = (req, res) => {
 app.use(error)
 
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server started using TCP port ${PORT}`)
 })
