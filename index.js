@@ -41,6 +41,19 @@ app.get('/api/persons', (req, res) => {
     res.json(persons)    
 })
 
+app.get('/api/persons/:id', (req, res) => {
+    const lookupId = Number(req.params.id)
+    const person = persons.find(person => person.id === lookupId)
+
+    if (person) {
+        res.json(person)
+    } else {
+        res.status(404).end()
+    }
+    
+})
+
+
 
 const PORT = 3001
 app.listen(PORT, () => {
