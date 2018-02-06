@@ -75,6 +75,22 @@ app.delete('/api/persons/:id', (req, res) => {
     
 })
 
+app.put('/api/persons/:id', (req, res) => {
+    
+    Person
+        .updateOne(
+            { _id: req.params.id },
+            req.body,
+        )
+        .then(result => { // successful update
+            res.status(204).end()
+        })
+        .catch(error => { // not found
+            res.status(404).end()
+        })
+    
+})
+
 
 app.post('/api/persons', (req, res) => {
 
@@ -104,8 +120,6 @@ app.post('/api/persons', (req, res) => {
                 .json({ error: 'Error occured.' })
                 .status(500);
         })
-
-
 
 })
 
