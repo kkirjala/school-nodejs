@@ -3,6 +3,8 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 
+const Person = require('./models/person')
+
 const app = express()
 
 app.use(express.static('build'))
@@ -18,49 +20,58 @@ app.get('/', (req, res) => {
     res.send('<h1>Hello.</h1><div>Please use some other endpoint.</div>')
 })
 
-app.get('/info', (req, res) => {   
-    res.send(`puhelinluettelossa ${persons.length} henkilön tiedot.<br/>${new Date()}`)
+app.get('/info', (req, res) => {
+
+    Person
+        .count({})
+        .then(count => {
+            res.send(`puhelinluettelossa ${count} henkilön tiedot.<br/>${new Date()}`)
+        })
+    
 })
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)    
+    Person
+        .find({})
+        .then(person => {
+            res.json(person.map(Person.format))
+        })
+        .catch(error => {
+            console.log(error)
+        })
 })
 
-// find person either by id (primary) or by name (case-insensitive)
-findPerson = (searchTerm) => {
-
-    if (!isNaN(searchTerm)) {
-        return persons
-            .find(person => person.id === searchTerm)
-    } else {
-        return persons
-            .find(person => person.name.toLowerCase() === searchTerm.toLowerCase())
-    }
-}
 
 app.get('/api/persons/:id', (req, res) => {
 
-    const person = findPerson(Number(req.params.id))
+    Person
+        .findOne({_id: req.params.id})
+        .then(person => {
+            if (!person) { // nothing found
+                res.status(404).end()
+            } else { // person found
+                res.json(Person.format(person))
+            }
+        })
+        .catch(error => { // invalid ObjectId
+            console.log(error)
+            res.status(404).end()
+        }) 
 
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
+
     
 })
 
 app.delete('/api/persons/:id', (req, res) => {
 
-    const lookupPerson = findPerson(Number(req.params.id))
-
-    if (lookupPerson) {
-        persons = persons
-            .filter(person => person.id !== lookupPerson.id)
-        res.status(204).end()
-    } else {
-        res.status(404).end()
-    }
+    Person
+        .deleteOne({_id: req.params.id})
+        .then(result => { // successful deletion
+            res.status(204).end()
+        })
+        .catch(error => { // not found
+            res.status(404).end()
+        })
     
 })
 
@@ -73,22 +84,36 @@ app.post('/api/persons', (req, res) => {
         return res
             .status(400)
             .json({ error: 'content missing' })
-    } else if (findPerson(newPerson.name)) {
+    } 
+    
+    /*
+    else if (findPerson(newPerson.name)) {
         return res
             .status(422)
             .json({ error: 'name must be unique' })
     }
+    */
 
-    const addPerson = {
+    const addPerson = new Person({
         name: newPerson.name,
         phoneNumber: newPerson.phoneNumber,
-        id: Math.floor(Math.random() * 1000000)
-    }
+    })
 
-    persons = persons.concat(addPerson)
+    addPerson
+        .save()
+        .then(result => {
+            res
+                .json(Person.format(addPerson))
+                .status(200);
+        })
+        .catch(error => {
+            console.log(error)
+            res
+                .json({ error: 'Error occured.' })
+                .status(500);
+        })
 
-    res.json(addPerson)
-    res.status(200);
+
 
 })
 
