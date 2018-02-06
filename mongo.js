@@ -4,27 +4,39 @@ const config = require('./dbconfig')[env];
 
 const url = `mongodb://${config.database.username}:${config.database.password}@${config.database.host}:${config.database.port}/${config.database.db}`
 
-console.log(url);
+const commandlineArgs = process.argv.slice(2)
 
-    /*
 mongoose.connect(url)
 
-const Note = mongoose.model('Note', {
-  content: String,
-  date: Date,
-  important: Boolean
+const Person = mongoose.model('Person', {
+    name: String,
+    phoneNumber: String,
 })
 
-const note = new Note({
-  content: 'HTML on helppoa',
-  date: new Date(),
-  important: true
-})
+if (commandlineArgs.length == 0) {  // display persons
 
-note
-  .save()
-  .then(response => {
-    console.log('note saved!')
-    mongoose.connection.close()
-  })
-  */
+    Person
+        .find({})
+        .then(result => {
+            console.log("Puhelinluettelo")
+            result.forEach(person => {
+                console.log(`${person.name} ${person.phoneNumber}`)
+            })
+            mongoose.connection.close()
+        })
+
+} else {    // add a new person
+
+    const person = new Person({
+        name: commandlineArgs[0],
+        phoneNumber: commandlineArgs[1],
+    })
+
+    person
+        .save()
+        .then(result => {
+            console.log(`Lisätään henkilö ${person.name} numero ${person.phoneNumber} luetteloon.`)
+            mongoose.connection.close()
+        })
+
+}
