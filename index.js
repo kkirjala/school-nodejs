@@ -85,14 +85,6 @@ app.post('/api/persons', (req, res) => {
             .status(400)
             .json({ error: 'content missing' })
     } 
-    
-    /*
-    else if (findPerson(newPerson.name)) {
-        return res
-            .status(422)
-            .json({ error: 'name must be unique' })
-    }
-    */
 
     const addPerson = new Person({
         name: newPerson.name,
