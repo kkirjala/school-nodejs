@@ -6,9 +6,19 @@ const url = `mongodb://${config.database.username}:${config.database.password}@$
 
 mongoose.connect(url)
 
-const Person = mongoose.model('Person', {
+const personSchema = new mongoose.Schema({
     name: String,
     phoneNumber: String,
 })
+
+personSchema.statics.format = function(person) {
+    return {
+        name: person.name,
+        phoneNumber: person.phoneNumber,
+        id: person._id
+      }
+}
+
+const Person = mongoose.model('Person', personSchema)
 
 module.exports = Person
