@@ -14,30 +14,6 @@ morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :body :res[content-length] - :response-time ms'))
 
 
-let persons = [
-    {
-      "name": "Arto Hellas",
-      "phoneNumber": "040-123456",
-      "id": 1
-    },
-    {
-      "name": "Martti Tienari",
-      "phoneNumber": "040-123456",
-      "id": 2
-    },
-    {
-      "name": "Arto Järvinen",
-      "phoneNumber": "040-123456",
-      "id": 3
-    },
-    {
-      "name": "Lea Kutvonen",
-      "phoneNumber": "040-123456",
-      "id": 4
-    }
-  ]
-
-
 app.get('/', (req, res) => {
     res.send('<h1>Hello.</h1><div>Please use some other endpoint.</div>')
 })
