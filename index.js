@@ -55,7 +55,7 @@ app.get('/api/persons/:id', (req, res) => {
         })
         .catch(error => { // invalid ObjectId
             console.log(error)
-            res.status(404).end()
+            res.status(400).send({ error: 'Invalid id' })
         }) 
 
 
