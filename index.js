@@ -115,10 +115,15 @@ app.post('/api/persons', (req, res) => {
                 .status(200);
         })
         .catch(error => {
-            console.log(error)
-            res
+            if (error.code == 11000) { // duplicate key
+                res
+                    .status(409)
+                    .json({ error: `Person ${addPerson.name} already found.` })
+            } else { // some other error
+                res 
                 .json({ error: 'Error occured.' })
                 .status(500);
+            }
         })
 
 })

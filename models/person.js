@@ -7,8 +7,15 @@ const url = `mongodb://${config.database.username}:${config.database.password}@$
 mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    phoneNumber: String,
+    name: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    phoneNumber: {
+        type: String,
+        required: true
+    }
 })
 
 personSchema.statics.format = function(person) {
